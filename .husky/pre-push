@@ -1,0 +1,4 @@
+#!/bin/sh
+
+npx prettier --write .
+npm run lint
