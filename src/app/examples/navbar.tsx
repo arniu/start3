@@ -36,7 +36,7 @@ export function Navbar({ width }: NavbarProps) {
       <ol>
         {NAV_LIST.map((example, idx) => (
           <li
-            key={example.name + idx}
+            key={example.name}
             className={clsx("mt-[16px] block overflow-hidden rounded-md", {
               "ring ring-blue-500": example.href === pathname,
             })}
@@ -45,6 +45,7 @@ export function Navbar({ width }: NavbarProps) {
               <Image
                 src={example.cover}
                 alt={example.name}
+                priority={idx === 0}
                 width={400}
                 height={250}
               />
