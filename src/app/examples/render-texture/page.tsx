@@ -1,49 +1,92 @@
 "use client";
 
-import { OrbitControls } from "@react-three/drei";
+import {
+  ContactShadows,
+  OrbitControls,
+  PerspectiveCamera,
+  RenderTexture,
+  Text,
+} from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import * as THREE from "three";
 
 export default function Page() {
   return (
-    <Canvas>
+    <Canvas camera={{ position: [5, 5, 5], fov: 25 }}>
       <ambientLight intensity={Math.PI / 2} />
-      <spotLight
-        position={[10, 10, 10]}
-        angle={0.15}
-        penumbra={1}
-        decay={0}
-        intensity={Math.PI}
+      <directionalLight position={[10, 10, 5]} intensity={Math.PI} />
+
+      <Cube />
+      <Dodecahedron position={[0, 1, 0]} scale={0.2} />
+      <ContactShadows
+        frames={1}
+        position={[0, -0.5, 0]}
+        blur={1}
+        opacity={0.75}
       />
-      <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
-      <OrbitControls />
+      <ContactShadows
+        frames={1}
+        position={[0, -0.5, 0]}
+        blur={3}
+        color="orange"
+      />
+
+      <OrbitControls minPolarAngle={0} maxPolarAngle={Math.PI / 2.1} />
     </Canvas>
   );
 }
 
-function Box(props: JSX.IntrinsicElements["mesh"]) {
-  // This reference will give us direct access to the THREE.Mesh object
-  const meshRef = useRef<THREE.Mesh>(null!);
-  // Hold state for hovered and clicked events
-  const [isHovered, setHovered] = useState(false);
-  const [isClicked, setClicked] = useState(false);
-  // Rotate mesh every frame, this is outside of React without overhead
-  useFrame((_state, delta) => (meshRef.current.rotation.x += delta));
+function Cube() {
+  const textRef = useRef<THREE.Mesh>(null!);
+  useFrame((state) => {
+    textRef.current.position.x = Math.sin(state.clock.elapsedTime) * 2;
+  });
 
   return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={isClicked ? 1.5 : 1}
-      onClick={() => setClicked(!isClicked)}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={isHovered ? "hotpink" : "orange"} />
+    <mesh>
+      <boxGeometry />
+      <meshStandardMaterial>
+        <RenderTexture attach="map" anisotropy={16}>
+          <PerspectiveCamera
+            makeDefault
+            manual
+            aspect={1 / 1}
+            position={[0, 0, 5]}
+          />
+          <color attach="background" args={["orange"]} />
+          <ambientLight intensity={Math.PI / 2} />
+          <directionalLight position={[10, 10, 5]} intensity={Math.PI} />
+          <Text ref={textRef} fontSize={4} color="#555">
+            Hello
+          </Text>
+          <Dodecahedron />
+        </RenderTexture>
+      </meshStandardMaterial>
     </mesh>
+  );
+}
+
+function Dodecahedron(props: JSX.IntrinsicElements["group"]) {
+  const meshRef = useRef<THREE.Mesh>(null!);
+  const [isHovered, setHovered] = useState(false);
+  const [isClicked, setClicked] = useState(false);
+  useFrame((_state, delta) => {
+    meshRef.current.rotation.x += delta;
+  });
+
+  return (
+    <group {...props}>
+      <mesh
+        ref={meshRef}
+        scale={isClicked ? 1.5 : 1}
+        onClick={() => setClicked(!isClicked)}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+      >
+        <dodecahedronGeometry args={[0.75]} />
+        <meshStandardMaterial color={isHovered ? "hotpink" : "#5de4c7"} />
+      </mesh>
+    </group>
   );
 }
