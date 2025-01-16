@@ -37,9 +37,10 @@ export function Navbar({ width }: NavbarProps) {
         {NAV_LIST.map((example, idx) => (
           <li
             key={example.name}
-            className={clsx("mt-[16px] block overflow-hidden rounded-md", {
-              "ring ring-blue-500": example.href === pathname,
-            })}
+            className={clsx(
+              "rounded-m mt-[16px] block overflow-hidden rounded-md bg-gray-500/10",
+              example.href === pathname && "ring ring-blue-500",
+            )}
           >
             <Link href={example.href}>
               <Image
