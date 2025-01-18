@@ -1,49 +1,38 @@
 "use client";
 
 import { OrbitControls } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { Suspense } from "react";
 import * as THREE from "three";
 
+import { Car, Environment, Grid } from "./model";
+
+// https://threejs.org/examples/#webgl_materials_car
 export default function Page() {
-  return (
-    <Canvas>
-      <ambientLight intensity={Math.PI / 2} />
-      <spotLight
-        position={[10, 10, 10]}
-        angle={0.15}
-        penumbra={1}
-        decay={0}
-        intensity={Math.PI}
-      />
-      <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
-      <OrbitControls />
-    </Canvas>
-  );
-}
-
-function Box(props: JSX.IntrinsicElements["mesh"]) {
-  // This reference will give us direct access to the THREE.Mesh object
-  const meshRef = useRef<THREE.Mesh>(null!);
-  // Hold state for hovered and clicked events
-  const [isHovered, setHovered] = useState(false);
-  const [isClicked, setClicked] = useState(false);
-  // Rotate mesh every frame, this is outside of React without overhead
-  useFrame((_state, delta) => (meshRef.current.rotation.x += delta));
+  const background = new THREE.Color(0x333333);
+  const fog = new THREE.Fog(0x333333, 10, 15);
 
   return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={isClicked ? 1.5 : 1}
-      onClick={() => setClicked(!isClicked)}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
+    <Canvas
+      className="bg-[#333333]"
+      scene={{ background, fog }}
+      camera={{ fov: 75, near: 0.1, far: 1000, position: [4.25, 1.4, -4.5] }}
     >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={isHovered ? "hotpink" : "orange"} />
-    </mesh>
+      <OrbitControls
+        maxDistance={9}
+        maxPolarAngle={THREE.MathUtils.degToRad(90)}
+        target={[0, 0.5, 0]}
+      />
+
+      <Suspense fallback={null}>
+        <Environment />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <Car />
+      </Suspense>
+
+      <Grid />
+    </Canvas>
   );
 }
