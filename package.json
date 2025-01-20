@@ -16,7 +16,8 @@
     "next": "^14.x",
     "react": "^18.x",
     "react-dom": "^18.x",
-    "three": "~0.172.x"
+    "three": "~0.172.x",
+    "three-stdlib": "^2.x"
   },
   "devDependencies": {
     "@types/node": "^20.x",

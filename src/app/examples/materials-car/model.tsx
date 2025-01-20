@@ -49,7 +49,7 @@ export function Car({
   const wheelsRef = useRef([] as THREE.Object3D[]);
 
   // FIXME: `gltf.scene.children[0]` can be `undefined` occasionally
-  const carModel = gltf.nodes["RootNode"] ?? null;
+  const model = gltf.nodes["RootNode"] ?? null;
 
   useFrame((state) => {
     const rotation = -state.clock.elapsedTime * Math.PI * 2;
@@ -60,9 +60,9 @@ export function Car({
 
   useEffect(() => {
     wheelsRef.current = ["wheel_fl", "wheel_fr", "wheel_rl", "wheel_rr"]
-      .map((name) => carModel?.getObjectByName(name))
+      .map((name) => model?.getObjectByName(name))
       .filter((obj) => obj !== undefined);
-  }, [carModel]);
+  }, [model]);
 
   // set body material
   useEffect(() => {
@@ -74,8 +74,8 @@ export function Car({
       clearcoatRoughness: 0.03,
     });
 
-    setMaterial.call(carModel, material, "body");
-  }, [carModel, bodyColor]);
+    attachTo(material, model, "body");
+  }, [model, bodyColor]);
 
   // set glass material
   useEffect(() => {
@@ -86,8 +86,8 @@ export function Car({
       transmission: 1.0,
     });
 
-    setMaterial.call(carModel, material, "glass");
-  }, [carModel, glassColor]);
+    attachTo(material, model, "glass");
+  }, [model, glassColor]);
 
   // set details material
   useEffect(() => {
@@ -97,29 +97,26 @@ export function Car({
       roughness: 0.5,
     });
 
-    // prettier-ignore
-    setMaterial.call(carModel, material, "rim_fl", "rim_fr", "rim_rl", "rim_rr", "trim");
-  }, [carModel, detailsColor]);
+    attachTo(material, model, "rim_fl", "rim_fr", "rim_rl", "rim_rr", "trim");
+  }, [model, detailsColor]);
 
   return (
-    carModel && (
-      <primitive {...props} object={carModel}>
-        <Suspense fallback={null}>
-          <Shadow renderOrder={2} />
-        </Suspense>
-      </primitive>
-    )
+    <primitive {...props} object={model}>
+      <Suspense fallback={null}>
+        <Shadow renderOrder={2} />
+      </Suspense>
+    </primitive>
   );
 }
 
-function setMaterial(
-  this: THREE.Object3D | undefined,
+function attachTo(
   material: THREE.Material,
-  ...names: string[]
+  target?: THREE.Object3D,
+  ...selectors: string[]
 ) {
-  if (this) {
-    names.forEach((name) => {
-      const obj = this.getObjectByName(name);
+  if (target) {
+    selectors.forEach((name) => {
+      const obj = target.getObjectByName(name);
       if (obj instanceof THREE.Mesh) {
         obj.material = material;
       }
@@ -134,10 +131,10 @@ function Shadow(props: JSX.IntrinsicElements["mesh"]) {
     <mesh {...props} rotation={[-Math.PI / 2, 0, 0]}>
       <planeGeometry args={[0.655 * 4, 1.3 * 4]} />
       <meshBasicMaterial
-        map={shadow}
         blending={THREE.MultiplyBlending}
         toneMapped={false}
         transparent
+        map={shadow}
       />
     </mesh>
   );
