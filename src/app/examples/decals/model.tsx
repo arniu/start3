@@ -1,7 +1,7 @@
 "use client";
 
-import { useGLTF } from "@react-three/drei";
-import { ThreeEvent, useLoader } from "@react-three/fiber";
+import { useGLTF, useTexture } from "@react-three/drei";
+import { ThreeEvent } from "@react-three/fiber";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { DecalGeometry } from "three/examples/jsm/Addons.js";
@@ -101,22 +101,22 @@ export function useLeePerrySmith() {
   const LEE_PERRY_SMITH = "/examples/decals/LeePerrySmith/LeePerrySmith.glb";
   const { nodes } = useGLTF(LEE_PERRY_SMITH, DRACO_GLTF);
 
-  const [normalMap, specularMap, map] = useLoader(THREE.TextureLoader, [
+  const [normalMap, specularMap, map] = useTexture([
     "/examples/decals/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg",
     "/examples/decals/LeePerrySmith/Map-SPEC.jpg",
     "/examples/decals/LeePerrySmith/Map-COL.jpg",
   ]);
 
   return useMemo(() => {
+    map.colorSpace = THREE.SRGBColorSpace;
     const model = nodes.LeePerrySmith as THREE.Mesh;
     if (model.scale.x < 10) {
       model.scale.multiplyScalar(10);
     }
 
-    map.colorSpace = THREE.SRGBColorSpace;
     model.material = new THREE.MeshPhongMaterial({
-      specular: 0x111111,
       shininess: 25,
+      specular: 0x111111,
       specularMap,
       normalMap,
       map,
@@ -127,7 +127,7 @@ export function useLeePerrySmith() {
 }
 
 export function useDecalMaterial() {
-  const [decalDiffuse, decalNormal] = useLoader(THREE.TextureLoader, [
+  const [decalDiffuse, decalNormal] = useTexture([
     "/examples/decals/decal/decal-diffuse.png",
     "/examples/decals/decal/decal-normal.jpg",
   ]);

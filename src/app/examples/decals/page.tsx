@@ -6,7 +6,7 @@ import { Suspense } from "react";
 
 import { LeePerrySmith } from "./model";
 
-// https://threejs.org/examples/#webgl_materials_car
+// https://threejs.org/examples/#webgl_decals
 export default function Page() {
   return (
     <Canvas camera={{ fov: 45, near: 1, far: 1000, position: [0, 0, 120] }}>
