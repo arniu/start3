@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 
 export const NAV_LIST = [
   { name: "lookat", label: "Look at mouse" },
-  { name: "decals", label: "Load geometry" },
   { name: "materials-car", label: "Load materials" },
   { name: "render-texture", label: "Render texture", cover: "cover.png" },
 ].map(({ cover = "cover.jpg", ...example }) => ({
