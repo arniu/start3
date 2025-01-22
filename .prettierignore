@@ -1,3 +1,7 @@
+# Libs
+public/libs/*
+!public/libs/README.md
+
+# Auto formatted
 pnpm-lock.yaml
 tsconfig.json
-public/libs/
