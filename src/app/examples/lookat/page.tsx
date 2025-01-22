@@ -1,7 +1,7 @@
 "use client";
 
 import { Text } from "@react-three/drei";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, ThreeElements, useFrame, useThree } from "@react-three/fiber";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -40,7 +40,7 @@ function Rig() {
   });
 }
 
-type BoxProps = JSX.IntrinsicElements["mesh"] & {
+type BoxProps = ThreeElements["mesh"] & {
   text?: string;
 };
 

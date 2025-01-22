@@ -1,11 +1,11 @@
 "use client";
 
-import { useEnvironment, useGLTF } from "@react-three/drei";
-import { useFrame, useLoader, useThree } from "@react-three/fiber";
+import { LIB_DRACO } from "@/constants/r3f";
+import { useEnvironment, useGLTF, useTexture } from "@react-three/drei";
+import { ThreeElements, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useRef } from "react";
 import * as THREE from "three";
 
-const DRACO_GLTF = "/libs/draco-gltf/";
 const VENICE_SUNSET = "/examples/materials-car/venice_sunset_1k.hdr";
 const FERRARI_AO = "/examples/materials-car/ferrari_ao.png";
 const FERRARI = "/examples/materials-car/ferrari.glb";
@@ -20,7 +20,7 @@ export function Environment() {
   return null;
 }
 
-export function Grid(props: JSX.IntrinsicElements["gridHelper"]) {
+export function Grid(props: ThreeElements["gridHelper"]) {
   const grid = new THREE.GridHelper(20, 40, 0xffffff, 0xffffff);
   grid.material.opacity = 0.2;
   grid.material.depthWrite = false;
@@ -33,7 +33,7 @@ export function Grid(props: JSX.IntrinsicElements["gridHelper"]) {
   return <primitive {...props} object={grid} />;
 }
 
-type CarProps = JSX.IntrinsicElements["mesh"] & {
+type CarProps = ThreeElements["mesh"] & {
   bodyColor?: THREE.ColorRepresentation;
   glassColor?: THREE.ColorRepresentation;
   detailsColor?: THREE.ColorRepresentation;
@@ -45,11 +45,11 @@ export function Car({
   detailsColor,
   ...props
 }: CarProps) {
-  const gltf = useGLTF(FERRARI, DRACO_GLTF);
+  const gltf = useGLTF(FERRARI, LIB_DRACO);
   const wheelsRef = useRef([] as THREE.Object3D[]);
 
   // FIXME: `gltf.scene.children[0]` can be `undefined` occasionally
-  const model = gltf.nodes["RootNode"] ?? null;
+  const model = gltf.nodes.RootNode ?? null;
 
   useFrame((state) => {
     const rotation = -state.clock.elapsedTime * Math.PI * 2;
@@ -124,8 +124,8 @@ function attachTo(
   }
 }
 
-function Shadow(props: JSX.IntrinsicElements["mesh"]) {
-  const shadow = useLoader(THREE.TextureLoader, FERRARI_AO);
+function Shadow(props: ThreeElements["mesh"]) {
+  const shadow = useTexture(FERRARI_AO);
 
   return (
     <mesh {...props} rotation={[-Math.PI / 2, 0, 0]}>

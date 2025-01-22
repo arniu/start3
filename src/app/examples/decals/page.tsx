@@ -4,6 +4,7 @@ import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 
+import { R3FLoading } from "@/components/loading";
 import { LeePerrySmith } from "./model";
 
 // https://threejs.org/examples/#webgl_decals
@@ -25,7 +26,7 @@ export default function Page() {
 
       <OrbitControls minDistance={50} maxDistance={200} />
 
-      <Suspense fallback={null}>
+      <Suspense fallback={<R3FLoading />}>
         <LeePerrySmith />
       </Suspense>
     </Canvas>

@@ -1,12 +1,11 @@
 "use client";
 
+import { LIB_DRACO } from "@/constants/r3f";
 import { useGLTF, useTexture } from "@react-three/drei";
-import { ThreeEvent } from "@react-three/fiber";
+import { ThreeElements, ThreeEvent } from "@react-three/fiber";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { DecalGeometry } from "three/examples/jsm/Addons.js";
-
-const DRACO_GLTF = "/libs/draco-gltf/";
 
 type DecalData = {
   position: THREE.Vector3;
@@ -21,7 +20,7 @@ const params = {
   rotate: true,
 };
 
-export function LeePerrySmith(props: JSX.IntrinsicElements["mesh"]) {
+export function LeePerrySmith(props: ThreeElements["mesh"]) {
   const model = useLeePerrySmith();
   const decalMaterial = useDecalMaterial();
   const meshRef = useRef<THREE.Mesh>(null!);
@@ -99,7 +98,7 @@ export function LeePerrySmith(props: JSX.IntrinsicElements["mesh"]) {
 
 export function useLeePerrySmith() {
   const LEE_PERRY_SMITH = "/examples/decals/LeePerrySmith/LeePerrySmith.glb";
-  const { nodes } = useGLTF(LEE_PERRY_SMITH, DRACO_GLTF);
+  const { nodes } = useGLTF(LEE_PERRY_SMITH, LIB_DRACO);
 
   const [normalMap, specularMap, map] = useTexture([
     "/examples/decals/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg",

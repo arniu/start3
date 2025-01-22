@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import * as THREE from "three";
 
+import { R3FLoading } from "@/components/loading";
 import { Car, Environment, Grid } from "./model";
 
 // https://threejs.org/examples/#webgl_materials_car
@@ -24,12 +25,9 @@ export default function Page() {
         target={[0, 0.5, 0]}
       />
 
-      <Suspense fallback={null}>
-        <Environment />
-      </Suspense>
-
-      <Suspense fallback={null}>
+      <Suspense fallback={<R3FLoading />}>
         <Car />
+        <Environment />
       </Suspense>
 
       <Grid />
