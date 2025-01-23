@@ -5,12 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export const NAV_LIST = [
+export const examples = [
+  { name: "decals", label: "Using decals" },
   { name: "lookat", label: "Look at mouse" },
   { name: "materials-car", label: "Load materials" },
-  { name: "render-texture", label: "Render texture", cover: "cover.png" },
-].map(({ cover = "cover.jpg", ...example }) => ({
-  cover: `/examples/${example.name}/${cover}`,
+  { name: "render-texture", label: "Render texture" },
+].map((example) => ({
+  cover: `/examples/${example.name}/cover.jpg`,
   href: `/examples/${example.name}`,
   ...example,
 }));
@@ -34,7 +35,7 @@ export function Navbar({ width }: NavbarProps) {
         Three.<span className="text-sm text-yellow-300">JS</span> Examples
       </h2>
       <ol>
-        {NAV_LIST.map((example, idx) => (
+        {examples.map((example, idx) => (
           <li
             key={example.name}
             className={clsx(

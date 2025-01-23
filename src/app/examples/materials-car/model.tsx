@@ -1,19 +1,18 @@
 "use client";
 
-import { LIB_DRACO } from "@/constants/r3f";
+import { ENV_FILE, LIB_DRACO } from "@/constants/r3f";
 import { useEnvironment, useGLTF, useTexture } from "@react-three/drei";
 import { ThreeElements, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useRef } from "react";
 import * as THREE from "three";
 
-const VENICE_SUNSET = "/examples/materials-car/venice_sunset_1k.hdr";
 const FERRARI_AO = "/examples/materials-car/ferrari_ao.png";
 const FERRARI = "/examples/materials-car/ferrari.glb";
 
 export function Environment() {
   const scene = useThree((it) => it.scene);
 
-  const rgbeTexture = useEnvironment({ files: VENICE_SUNSET });
+  const rgbeTexture = useEnvironment({ files: ENV_FILE.venice_sunset_1k });
   rgbeTexture.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = rgbeTexture;
 
